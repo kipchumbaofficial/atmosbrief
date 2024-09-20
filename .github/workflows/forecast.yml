@@ -1,0 +1,34 @@
+name: Post Daily Forecast
+
+
+on:
+    schedule:
+        # Runs at 6:23 AM Nairobi time (UTC +3)
+        - cron: '23 3 * * *'
+jobs:
+    post_forecast:
+        runs-on: ubuntu-latest
+
+        steps:
+            - name: Checkout Repository
+              uses: actions/checkout@v2
+
+            - name: Set Up python
+              uses: actions/setup-python@v2
+              with:
+                python-version: '3.x'
+            
+            - name: Install dependencies
+              run: |
+                pip install -r requirements.txt
+            
+            - name: Post Forecast for All cities
+              run: |
+                python3 bot/forecast.py
+
+              env:
+                  CONSUMER_KEY: ${{ secrets.CONSUMER_KEY }}
+                  CONSUMER_SECRET: ${{ secrets.CONSUMER_SECRET }}
+                  ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+                  ACCESS_TOKEN_SECRET: ${{ secrets.ACCESS_TOKEN_SECRET }}
+                  WEATHER_API_KEY: ${{ secrets.WEATHER_API_KEY }}
