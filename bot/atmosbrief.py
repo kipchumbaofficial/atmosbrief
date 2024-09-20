@@ -3,12 +3,9 @@
     - X bot for posting weather briefs of random cities around the world
 """
 import os
-import time
 import requests
 import tweepy
 from countryflag import getflag
-import pytz
-import schedule
 
 
 # X API credentials
@@ -36,6 +33,14 @@ client = tweepy.Client(
     access_token=ACCESS_TOKEN,
     access_token_secret=ACCESS_TOKEN_SECRET
 )
+# for media upload
+auth = tweepy.OAuth1UserHandler(
+    CONSUMER_KEY,
+    CONSUMER_SECRET,
+    ACCESS_TOKEN,
+    ACCESS_TOKEN_SECRET
+)
+api = tweepy.API(auth)
 
 
 # Fetch Weather data
@@ -149,111 +154,3 @@ def create_post(city):
         return post
     else:
         return None
-
-
-# Post salutation
-def post_welcoming_message():
-    """post_welcoming_message:
-        - Posts salutation before posting weather updates
-        Returns:
-            None
-    """
-    welcome_message = ("Good morning, World! "
-                       f"It's {get_sunrise('Nairobi')} EAT, "
-                       "and the sun is up in Nairobi! 🌅.\n"
-                       "Time for #WeatherBriefs, "
-                       "keep it locked for weather "
-                       "updates across 17 cities 🌍.\n"
-                       "Follow @atmosbrief & "
-                       "turn on notifications 🔔 to stay prepared!\n"
-                       "#StayWeatherReady")
-    try:
-        client.create_tweet(text=welcome_message)
-        print("Welcoming tweet posted.")
-    except Exception as e:
-        print(f"Error posting welcoming tweet: {e}")
-
-
-# Post on X using X API V2
-def post_current_weather(city):
-    """post_tweer:
-        - Posts the updates on x @atmosbrief
-        Returns:
-            None
-    """
-    post = create_post(city)
-    if post:
-        try:
-            client.create_tweet(text=post)
-            print(f"Tweet posted for {city}: {post}")
-        except Exception as e:
-            print(f"Error posting tweet: {e}")
-    else:
-        print(f"No weather data for {city}")
-
-
-# Post Weather Forecast
-def post_weather_forecast(city):
-    """post_weather_forecast:
-        - Posts the weather forecast every morning
-        Returns:
-            None
-    """
-    forecast = create_forecast_post(city)
-    if forecast:
-        try:
-            client.create_tweet(text=forecast)
-            print(f"Tweet posted for {city}: {forecast}")
-        except Exception as e:
-            print(f"Error posting tweet: {e}")
-    else:
-        print(f"No weather data for {city}")
-
-
-# Post Weath Forecast for all the cities
-def post_cities_forecast():
-    """post_cities_forecast:
-        - Post forecast of all the choosen 17 cities
-        Returns:
-            None
-    """
-    post_welcoming_message()  # first tweet of the day
-    all_cities = african_cities + other_cities
-    for city in all_cities:
-        post_weather_forecast(city)
-
-
-# Post current weather for African cities
-def post_cities_current():
-    """post_cities_current:
-        - Posts current weather of all african cities
-        Returns:
-            None
-    """
-    for city in african_cities:
-        post_current_weather(city)
-
-
-# Scheduling
-def schedule_tweets():
-    """schedule_tweets:
-        - Schedules a tweet for a given time
-        Returns:
-            None
-
-    """
-    tz = pytz.timezone('Africa/Nairobi')
-    sunrise = get_sunrise('Nairobi')
-
-    if sunrise:
-        schedule.every().day.at("06:23").do(post_cities_forecast)
-    schedule.every().day.at("12:00").do(post_cities_current)
-    schedule.every().day.at("18:00").do(post_cities_current)
-
-
-if __name__ == "__main__":
-    schedule_tweets()
-    print("Bot started")
-    while True:
-        schedule.run_pending()
-        time.sleep(60)  # check every minute
