@@ -1,0 +1,36 @@
+name: Post Current Weather Updates
+
+
+on:
+    schedule:
+        # Runs at 7:00 AM, 12:00 PM, and 7:00 PM Nairobi time (UTC +3)
+        - cron: '0 4 * * *'
+        - cron: '0 9 * * *'
+        - cron: '0 16 * * *'
+jobs:
+    post_current_weather:
+        runs-on: ubuntu-latest
+
+    steps:
+        - name: Checkout repository
+          uses: actions/checkout@v2
+
+        - name: Set Up Python
+          uses: actions/setup-python@v2
+          with:
+            python-version: '3.x'
+
+        - name: Install dependencies
+          run: |
+            pip install -r requirements.txt
+
+        - name: Post Current weather for African cities
+          run: |
+            python3 bot/post_current.py
+            
+        env:
+            CONSUMER_KEY: ${{ secrets.CONSUMER_KEY }}
+            CONSUMER_SECRET: ${{ secrets.CONSUMER_SECRET }}
+            ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+            ACCESS_TOKEN_SECRET: ${{ secrets.ACCESS_TOKEN_SECRET }}
+            WEATHER_API_KEY: ${{ secrets.WEATHER_API_KEY }}
