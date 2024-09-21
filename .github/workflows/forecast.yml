@@ -4,7 +4,7 @@ name: Post Daily Forecast
 on:
     schedule:
         # Runs at 6:23 AM Nairobi time (UTC +3)
-        - cron: '0 4 * * *'
+        - cron: '22 3 * * *'
 jobs:
     post_forecast:
         runs-on: ubuntu-latest
