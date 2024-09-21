@@ -29,7 +29,7 @@ def post_welcoming_message():
                        "your latest updates.\n"
                        "turn on notifications 🔔 "
                        "#StayWeatherReady")
-    image_path = "../images/nairobi.jpeg"
+    image_path = "images/nairobi.jpeg"
 
     try:
         # Upload the image and get media_id

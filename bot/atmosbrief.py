@@ -19,9 +19,9 @@ WEATHER_API_KEY = os.getenv('WEATHER_API_KEY')
 WEATHER_URL = "http://api.weatherapi.com/v1/forecast.json?key={}&q={}"
 
 # Selected Cities
-african_cities = ['Nairobi', 'Cairo', 'Johannesburg',
+african_cities = ['Accra', 'Cairo', 'Johannesburg',
                   'Kinshasa', 'Addis Ababa', 'Casablanca',
-                  'Lagos', 'Abidjan', 'Dodoma', 'Accra']
+                  'Lagos', 'Abidjan', 'Dodoma', 'Nairobi']
 
 other_cities = ['London', 'New York', 'Sydney', 'Tokyo',
                 'Paris', 'Buenos aires', 'Dubai']
