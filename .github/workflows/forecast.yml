@@ -4,7 +4,7 @@ name: Post Daily Forecast
 on:
     schedule:
         # Runs at 6:23 AM Nairobi time (UTC +3)
-        - cron: '23 3 * * *'
+        - cron: '0 4 * * *'
 jobs:
     post_forecast:
         runs-on: ubuntu-latest
@@ -24,7 +24,7 @@ jobs:
             
             - name: Post Forecast for All cities
               run: |
-                python3 bot/forecast.py
+                python3 bot/post_forecast.py
 
               env:
                   CONSUMER_KEY: ${{ secrets.CONSUMER_KEY }}
