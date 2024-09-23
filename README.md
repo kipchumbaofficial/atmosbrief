@@ -94,10 +94,10 @@ We welcome contributions from the community! To contribute to atmosbrief, follow
 4. Push to the branch (git push origin feature-branch).
 5. Create a new Pull Request (PR) and describe the changes.
 
-## Before contributing, please ensure you:
+#### Before contributing, please ensure you:
 
-a) Adhere to the Python PEP8 style guide.
-b) Run tests locally before submitting your pull request.
+- Adhere to the Python PEP8 style guide.
+- Run tests locally before submitting your pull request.
 
 ### Contact
 For any inquiries or support, feel free to reach out:
