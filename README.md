@@ -66,13 +66,13 @@ CONSUMER_SECRET='your_X_API_key_secret'
 ACCESS_TOKEN='your_X_API_access_token'
 ACCESS_TOKEN_SECRET='your_X_API_access_token_secret'
 WEATHER_API_KEY='your_weather_API_key'
-
+```
 
 ### Installing Dependencies
 To install the bot's dependencies, run:
 ```bash
 pip install -r requirements.txt
-
+```
 ### Running the Bot Manually
 
 You can also run the bot manually to post weather updates using the following commands:
@@ -80,11 +80,11 @@ You can also run the bot manually to post weather updates using the following co
 For posting the daily forecast:
 ```bash
 python3 bot/forecast.py
-
+```
 For posting the current weather for African cities:
 ```bash
 python3 bot/post_current.py
-
+```
 ### Contribution Guidelines
 We welcome contributions from the community! To contribute to atmosbrief, follow these steps:
 
