@@ -102,7 +102,7 @@ We welcome contributions from the community! To contribute to atmosbrief, follow
 ### Contact
 For any inquiries or support, feel free to reach out:
 
-X: [@atmosbrief](https://twitter.com/atmosbrief) | [@DevKipchumba](https://twitter.com/DevKipchumba)
+X: [@victhengineer](https://twitter.com/atmosbrief) | [@victhengineer](https://twitter.com/DevKipchumba)
 Email: kipchumba.softwaredev@gmail.com
 
 > **Note**: The bot is limited to 50 tweets per day due to Twitter's 50 request limit within a 24-hour period. As a result, only a selected number of cities are included in the weather updates.
