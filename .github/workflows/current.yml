@@ -26,8 +26,8 @@ jobs:
 
             - name: Post Current weather for African cities
               run: |
-                python3 bot/post_current.py
-            
+                python3 bot/main.py
+
               env:
                 CONSUMER_KEY: ${{ secrets.CONSUMER_KEY }}
                 CONSUMER_SECRET: ${{ secrets.CONSUMER_SECRET }}
