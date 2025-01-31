@@ -37,7 +37,7 @@ jobs:
 
             - name: Commit and push generated image
               run: |
-                git pull  # Prevent merge conflicts
-                git add weather_images/
+                git pull
+                git add weather_updates/
                 git commit -m "Automated weather update"
                 git push
