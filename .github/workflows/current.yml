@@ -34,3 +34,10 @@ jobs:
                 ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
                 ACCESS_TOKEN_SECRET: ${{ secrets.ACCESS_TOKEN_SECRET }}
                 WEATHER_API_KEY: ${{ secrets.WEATHER_API_KEY }}
+
+            - name: Commit and push generated image
+              run: |
+                git pull  # Prevent merge conflicts
+                git add weather_images/
+                git commit -m "Automated weather update"
+                git push
