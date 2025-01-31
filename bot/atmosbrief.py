@@ -3,9 +3,11 @@
     - X bot for posting weather briefs of random cities around the world
 """
 import os
+from datetime import datetime
 import requests
 import tweepy
-from countryflag import getflag
+import matplotlib.pyplot as plt
+from matplotlib.table import Table
 
 
 # X API credentials
@@ -44,36 +46,41 @@ api = tweepy.API(auth)
 
 
 # Fetch Weather data
-def fetch_weather(city):
+def fetch_weather(cities, timeout=5):
     """fetch_weather:
-        - Fetches weather data from weatherapi.com for given city
+        - Fetches weather data from weatherapi.com for given cities
+        Args:
+            cities (list): A list of city names.
+            timeout (int): Timeout in seconds for each request (default: 5s)
         Returns:
-            The weather data or None if data cant be fetched
+            list: A list of dictionaries containing processed weather data.
     """
-    try:
-        response = requests.get(WEATHER_URL.format(WEATHER_API_KEY, city))
-        if response.status_code == 200:
-            return response.json()
-        else:
-            print("Failed to retrieve weather data")
-            return None
-    except Exception as e:
-        print(f"Error fetching weather data: {e}")
-        return None
+    weather_data = []
 
+    for city in cities:
+        try:
+            response = requests.get(
+                WEATHER_URL.format(WEATHER_API_KEY, city), timeout=timeout
+                )
+            if response.status_code == 200:
+                data = response.json()
+                weather_info = {
+                    'name': city,
+                    'condition': data['current']['condition']['text'],
+                    'temp': data['current']['temp_c'],
+                    'daily_chance_of_rain': data['forecast']['forecastday'][0]['day']['daily_chance_of_rain'],
+                    'maxwind_kph': data['forecast']['forecastday'][0]['day']['maxwind_kph'],
+                    'avghumidity': data['forecast']['forecastday'][0]['day']['avghumidity']
+                }
+                weather_data.append(weather_info)
+            else:
+                print("Failed to retrieve weather data")
+        except requests.exceptions.Timeout:
+            print(f"Timeout error for {city}. Skipping....")
+        except requests.exceptions.RequestException:
+            print(f"Error fetching weather data for {city}")
 
-# Get sunrise in given city
-def get_sunrise(city):
-    """get_sunrise:
-        - Get sunrise time from weather API forecast
-        Returns:
-            sunrise time as forecasted by weatherapi
-    """
-    data = fetch_weather(city)
-    if data:
-        return data['forecast']['forecastday'][0]['astro']['sunrise']
-    else:
-        return None
+    return weather_data
 
 
 # Abbreviate Country name to fit tweet:
@@ -91,66 +98,118 @@ def abbreviate_country(country):
     return country_abbreviations.get(country, country)
 
 
-# Format forecast post
-def create_forecast_post(city):
-    """create_forecast_post:
-        - Fetches the forecas data for a given city from weatherAPI
-        Returns:
-            Formated tweet with the days weather forecast
+def plot_weather_table(data):
     """
-    data = fetch_weather(city)
-    if data:
-        location = data['location']
-        forecast_day = data['forecast']['forecastday'][0]['day']
-        astro = data['forecast']['forecastday'][0]['astro']
+    Plots weather data as a table using Matplotlib.
 
-        # Format tweet
-        country = abbreviate_country(location['country'])
-        forecast = (f"Today's weather forecast for {location['name']},"
-                    f" {country}:\n"
-                    f"- Condition: {forecast_day['condition']['text']} \n"
-                    f"- High: {forecast_day['maxtemp_c']}°C, Low: "
-                    f"{forecast_day['mintemp_c']}°C 🌡️\n"
-                    "- Chance of Rain: "
-                    f"{forecast_day['daily_chance_of_rain']}% 🌧️\n"
-                    f"- Wind: {forecast_day['maxwind_kph']} km/h 🌬️\n"
-                    f"- Humidity: {forecast_day['avghumidity']}% 💧\n"
-                    f"- Sunrise: {astro['sunrise']} 🌞, "
-                    f"Sunset: {astro['sunset']} 🌇\n"
-                    f"#WeatherBriefs #{location['name'].replace(' ', '')}"
-                    "Weather #StayWeatherReady")
-        return forecast
-    else:
-        return None
-
-
-# Format a post
-def create_post(city):
-    """create_post:
-        - Formats a post before posting on x
-        Returns:
-            The formated tweet or None if fetching weather data fails
+    Args:
+        data (list): A list of dictionaries containing weather deatils
     """
-    data = fetch_weather(city)
-    if data:
-        location = data.get('location')
-        current = data.get('current')
-        forecast_day = data['forecast']['forecastday'][0]['day']
+    # Extra column headers
+    columns = ['City', 'Condition', 'Temperature (°C)', 'Rain (%)', 'Wind (km/h)', 'Humidity (%)']
 
-        # Compose the tweet with required fields
-        post = (f"Current weather in {location['name']}, "
-                f"{location['country']} "
-                f"{getflag([location['country']])}:\n"
-                f"Condition: {current['condition']['text']}\n"
-                f"Temperature: {current['temp_c']}°C\n"
-                f"Feels Like: {current['feelslike_c']}°C\n"
-                f"Last Updated: {current['last_updated']}\n"
-                f"Local Time: {location['localtime']}\n"
-                "- Chance of Rain: "
-                f"{forecast_day['daily_chance_of_rain']}% 🌧️\n"
-                f"#WeatherBriefs #{location['name'].replace(' ', '')}"
-                "Weather #StayWeatherReady")
+    # Extract rows of data
+    rows = [
+        [
+            d['name'],
+            d['condition'],
+            d['temp'],
+            d['daily_chance_of_rain'],
+            d['maxwind_kph'],
+            d['avghumidity']
+        ] for d in data
+    ]
 
-        return post
-    else:
-        return None
+    # Create figure
+    fig, ax = plt.subplots(figsize=(12, 6.75))
+    ax.axis('off')
+
+    # Add title to the left
+    title = "Today's Weather Forecast"
+    plt.text(
+        0.01,
+        1.05,
+        title,
+        ha='left',
+        va='center',
+        fontsize=18,
+        weight='bold',
+        transform=ax.transAxes)
+
+    # Add metadata to the rignt
+    metadata = [
+        f"Generated on: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}",
+        "Source: weatherapi.com",
+        "Engineer: victhengineer"
+    ]
+    for i, line in enumerate(metadata):
+        plt.text(
+            0.99,
+            1.05 - (i * 0.05),
+            line,
+            ha='right',
+            va='center',
+            fontsize=12,
+            style='italic',
+            transform=ax.transAxes
+            )
+
+    # Add table
+    table = Table(ax, bbox=[0, 0, 1, 0.85])
+
+    # Add header row
+    for i, header in enumerate(columns):
+        cell = table.add_cell(
+            0,
+            i,
+            width=1,
+            height=0.25,
+            text=header,
+            loc='center',
+            facecolor='lightgray')
+        cell.set_text_props(fontweight='bold', fontsize=16)
+
+    # Add data rows
+    for row_idx, row_data in enumerate(rows):
+        for col_idx, cell_data in enumerate(row_data):
+            cell = table.add_cell(
+                row_idx + 1,
+                col_idx,
+                width=1,
+                height=0.5,
+                text=str(cell_data),
+                loc="center")
+            cell.set_text_props(fontweight="bold", fontsize=16)
+
+    # Style adjustments
+    for i in range(len(rows) + 1): # Add cell borders
+        for j in range(len(columns)):
+            table[(i, j)].set_edgecolor('black')
+
+    # Add table to axes
+    ax.add_table(table)
+
+    # Add diagonal watermark
+    watermark_text = '@atmosbrief'
+    plt.text(
+        0.5, 0.5, watermark_text, fontsize=50, color="gray", alpha=0.2,
+        ha="center", va="center", rotation=45, transform=fig.transFigure
+    )
+    # Create a direcory if doesnt
+    save_dir = 'weather_updates'
+    os.makedirs(save_dir, exist_ok=True)
+
+    # Generate a formatted timestamp
+    timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+
+    # Define full file path
+    file_path = os.path.join(save_dir, f"weather_table_{timestamp}.jpg")
+
+    # Save the figure with a unique filename
+    plt.savefig(
+        file_path,
+        format="jpg",
+        dpi=600,
+        bbox_inches="tight",
+        pad_inches=0.4
+)
