@@ -4,7 +4,7 @@ name: Post Current Weather Updates
 on:
     schedule:
         # Runs at 7:00 AM, 12:00 PM, and 7:00 PM Nairobi time (UTC +3)
-        - cron: '25 4 * * *'
+        - cron: '51 4 * * *'
         - cron: '0 9 * * *'
         - cron: '5 16 * * *'
 jobs:
@@ -37,6 +37,8 @@ jobs:
 
             - name: Commit and push generated image
               run: |
+                git config user.email 'victokipchumba039@gmail.com'
+                git config user.name 'Victor Kipchumba'
                 git pull
                 git add weather_updates/
                 git commit -m "Automated weather update"
