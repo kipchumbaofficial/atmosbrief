@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """atmosbrief
-    - X bot for posting weather briefs of random cities around the world
+    - X bot for posting weather briefs of Selected cities around the world
 """
 import os
 from datetime import datetime
@@ -19,14 +19,6 @@ ACCESS_TOKEN_SECRET = os.getenv('ACCESS_TOKEN_SECRET')
 # Weather API credientials
 WEATHER_API_KEY = os.getenv('WEATHER_API_KEY')
 WEATHER_URL = "http://api.weatherapi.com/v1/forecast.json?key={}&q={}"
-
-# Selected Cities
-african_cities = ['Accra', 'Cairo', 'Johannesburg',
-                  'Kinshasa', 'Addis Ababa', 'Casablanca',
-                  'Lagos', 'Abidjan', 'Dodoma', 'Nairobi']
-
-other_cities = ['London', 'New York', 'Sydney', 'Tokyo',
-                'Paris', 'Buenos aires', 'Dubai']
 
 # Authenticate with X
 client = tweepy.Client(
@@ -68,9 +60,16 @@ def fetch_weather(cities, timeout=5):
                     'name': city,
                     'condition': data['current']['condition']['text'],
                     'temp': data['current']['temp_c'],
-                    'daily_chance_of_rain': data['forecast']['forecastday'][0]['day']['daily_chance_of_rain'],
-                    'maxwind_kph': data['forecast']['forecastday'][0]['day']['maxwind_kph'],
-                    'avghumidity': data['forecast']['forecastday'][0]['day']['avghumidity']
+                    'daily_chance_of_rain': data[
+                        'forecast']['forecastday'][0]['day'][
+                        'daily_chance_of_rain'
+                    ],
+                    'maxwind_kph': data['forecast']['forecastday'][0]['day'][
+                        'maxwind_kph'
+                    ],
+                    'avghumidity': data['forecast']['forecastday'][0]['day'][
+                        'avghumidity'
+                    ]
                 }
                 weather_data.append(weather_info)
             else:
@@ -106,7 +105,14 @@ def plot_weather_table(data):
         data (list): A list of dictionaries containing weather deatils
     """
     # Extra column headers
-    columns = ['City', 'Condition', 'Temperature (°C)', 'Rain (%)', 'Wind (km/h)', 'Humidity (%)']
+    columns = [
+        'City',
+        'Condition',
+        'Temperature (°C)',
+        'Rain (%)',
+        'Wind (km/h)',
+        'Humidity (%)'
+        ]
 
     # Extract rows of data
     rows = [
@@ -182,7 +188,7 @@ def plot_weather_table(data):
             cell.set_text_props(fontweight="bold", fontsize=16)
 
     # Style adjustments
-    for i in range(len(rows) + 1): # Add cell borders
+    for i in range(len(rows) + 1):  # Add cell borders
         for j in range(len(columns)):
             table[(i, j)].set_edgecolor('black')
 
@@ -212,4 +218,6 @@ def plot_weather_table(data):
         dpi=600,
         bbox_inches="tight",
         pad_inches=0.4
-)
+    )
+    print(f'Image Saved: {file_path}')
+    return file_path

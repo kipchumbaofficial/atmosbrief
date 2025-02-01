@@ -3,88 +3,55 @@
 ![atmosbrief](https://img.shields.io/twitter/follow/atmosbrief?style=social)
 
 ## Overview
-**atmosbrief** is an automated Twitter bot that provides real-time weather updates for major cities around the world, focusing especially on cities in Africa. It uses the Weather API and the X (formerly Twitter) API to tweet weather conditions such as temperature, humidity, sunrise, sunset times, and more. It runs at scheduled times throughout the day to keep followers informed about the current and forecasted weather.
+**atmosbrief** is an automated bot that provides real-time weather updates for major
+cities around the world. Originally focused on African cities, the bot now
+supports updates for multiple continents. It fetches weather data from
+[WeatherAPI](https://www.weatherapi.com/) and uses the X (formerly Twitter) API
+to tweet detailed weather conditions—such as temperature, humidity, wind speed,
+and chance of rain—in a visually enhanced table format. The bot is scheduled
+to run at specific times of the day via GitHub Actions.
 
 ## Features
 - Posts **daily forecasts** for selected cities at sunrise (Nairobi time).
-- Shares **current weather updates** for African cities three times a day (7:00 AM, 12:00 PM, and 7:00 PM Nairobi time).
-- Tweets include detailed weather information such as temperature, humidity, wind speed, and chance of rain.
-- Uses relevant weather icons and emojis to visually enhance the updates.
-- Automatically manages tweet formatting to ensure it fits within Twitter's character limits.
+- Shares **current weather updates** multiple times per day for cities across
+  five major regions.
+- Groups cities by continents using an internal dictionary with an Earth emoji
+  for each region.
+- Tweets include detailed weather data, visualized in a table with icons and
+  emojis.
+- Automatically manages tweet formatting to fit within X’s character limits.
+- Uses GitHub Actions to schedule posts and manage automation.
 
 ## How It Works
-- **Weather API**: Fetches forecasted and current weather information for a set of predefined cities using [WeatherAPI](https://www.weatherapi.com/).
-- **Twitter API (X API)**: Posts the weather updates on the [@atmosbrief](https://twitter.com/atmosbrief) Twitter account using the X API.
-- **GitHub Actions**: Automates the bot’s scheduling for posting weather updates at specific times.
-- **Time Zone**: The bot operates using the **Africa/Nairobi** time zone for scheduling posts.
+- **Weather API**: Retrieves forecasted and current weather data for a set of
+  predefined cities using WeatherAPI.
+- **X API (Twitter API)**: Posts weather updates from the [@atmosbrief](https://twitter.com/atmosbrief)
+  account with attached images of weather tables.
+- **Dictionary Iteration**: The bot uses a dictionary where keys are continents
+  (with an Earth emoji) and values are lists of five major cities (each from a
+  different country). It iterates through this dictionary to fetch data, plot
+  tables, and tweet updates.
+- **GitHub Actions**: Automates scheduling and deployment. The bot runs at
+  designated times (e.g., 7:30 AM EAT) based on a cron job.
+- **Time Zone**: Operates on the **Africa/Nairobi** time zone for scheduling.
 
 ## Cities Covered
-The bot posts weather updates for the following cities:
+The bot posts weather updates for major cities grouped by five regions:
 
-### African Cities:
-- Nairobi
-- Cairo
-- Johannesburg
-- Kinshasa
-- Addis Ababa
-- Casablanca
-- Lagos
-- Abidjan
-- Dodoma
-- Accra
-
-### Other Major Cities:
-- London
-- New York
-- Sydney
-- Tokyo
-- Paris
-- Buenos Aires
-- Dubai
+### Regions and Cities:
+- **🌏 Asia**: Tokyo, Delhi, Shanghai, Karachi, Dhaka
+- **🌍 Africa**: Lagos, Cairo, Kinshasa, Johannesburg, Nairobi
+- **🌍 Europe**: Moscow, London, Berlin, Madrid, Rome
+- **🌎 North America**: Mexico City, New York City, Toronto, Havana, Guatemala City
+- **🌎 South America & Oceania**: São Paulo, Buenos Aires, Lima, Santiago, Sydney
 
 ## Technology Stack
-- **Python**: Main programming language used for the bot.
-- **Tweepy**: Python library for accessing the X API.
-- **WeatherAPI**: For retrieving weather data.
-- **GitHub Actions**: For automating scheduled tasks.
-- **pytz**: For handling time zone conversions.
-- **Schedule**: Python package to schedule periodic tasks.
+- **Python**: Core language for bot logic.
+- **Tweepy**: For accessing and interacting with the X API.
+- **WeatherAPI**: Provides real-time and forecasted weather data.
+- **GitHub Actions**: Automates scheduled execution and deployment.
+- **Matplotlib**: Generates weather data tables as images.
 
-## Installation and Setup
-
-### Prerequisites
-- Python 3.x installed
-- Twitter Developer Account for API access
-- WeatherAPI Account for weather data access
-
-### Environment Variables
-You will need to set up the following environment variables for the bot to function properly. You can either store them in a `.env` file or configure them as GitHub Secrets if running the bot via GitHub Actions.
-
-```bash
-CONSUMER_KEY='your_X_API_key'
-CONSUMER_SECRET='your_X_API_key_secret'
-ACCESS_TOKEN='your_X_API_access_token'
-ACCESS_TOKEN_SECRET='your_X_API_access_token_secret'
-WEATHER_API_KEY='your_weather_API_key'
-```
-
-### Installing Dependencies
-To install the bot's dependencies, run:
-```bash
-pip install -r requirements.txt
-```
-### Running the Bot Manually
-
-You can also run the bot manually to post weather updates using the following commands:
-
-For posting the daily forecast:
-```bash
-python3 bot/forecast.py
-```
-For posting the current weather for African cities:
-```bash
-python3 bot/post_current.py
-```
 ### Contribution Guidelines
 We welcome contributions from the community! To contribute to atmosbrief, follow these steps:
 
@@ -102,7 +69,7 @@ We welcome contributions from the community! To contribute to atmosbrief, follow
 ### Contact
 For any inquiries or support, feel free to reach out:
 
-X: [@victhengineer](https://twitter.com/atmosbrief) | [@victhengineer](https://twitter.com/DevKipchumba)
+X: [@victhengineer](https://twitter.com/atmosbrief) | [@victhengineer](https://twitter.com/victhengineer)
 Email: kipchumba.softwaredev@gmail.com
 
-> **Note**: The bot is limited to 50 tweets per day due to Twitter's 50 request limit within a 24-hour period. As a result, only a selected number of cities are included in the weather updates.
+> **Note**: The bot is limited to 17 tweets per day due to Twitter's 50 request limit within a 24-hour period. As a result, only a selected number of cities are included in the weather updates.
