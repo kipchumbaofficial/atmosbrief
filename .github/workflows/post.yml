@@ -1,10 +1,12 @@
-name: Post Current Weather Updates
+name: Post Weather Updates
 
 
 on:
     schedule:
         # Runs at 7:00 AM, 12:00 PM, and 7:00 PM Nairobi time (UTC +3)
-        - cron: '0 6 * * *'
+        - cron: '0 4 * * *'
+        - cron: '0 9 * * *'
+        - cron: '0 15 * * *'
 jobs:
     post_current_weather:
         runs-on: ubuntu-latest
